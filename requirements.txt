@@ -1,10 +1,11 @@
+fastapi
+uvicorn
+pydantic
+python-dotenv
 pandas
 numpy
 scikit-learn
 joblib
 matplotlib
 seaborn
-fastapi
-uvicorn
-pydantic
-python-dotenv
+supabase
