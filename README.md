@@ -1,3 +1,12 @@
+---
+title: Churn Prediction API
+emoji: 📉
+colorFrom: red
+colorTo: blue
+sdk: docker
+pinned: false
+---
+
 # Proyek Prediksi Churn Pengguna
 
 Proyek ini bertujuan untuk memprediksi apakah seorang pengguna akan berhenti menggunakan aplikasi (churn) atau tetap aktif berdasarkan pola penggunaan mereka.
