@@ -6,13 +6,23 @@ import joblib
 import numpy as np
 import os
 from contextlib import asynccontextmanager
+import pandas as pd
 from dotenv import load_dotenv
 
 # --- 1. Load Environment Variables ---
 load_dotenv()
-API_KEY = os.getenv("API_KEY", "RAHASIA_SAYA_123") # Default jika .env tidak ada
+API_KEY = os.getenv("API_KEY") 
+
+if not API_KEY:
+    # Jika tidak ada di .env, gunakan default tapi berikan peringatan
+    print("WARNING: API_KEY not found in .env, using default development key.")
+    API_KEY = "RAHASIA_SAYA_123"
+
 API_KEY_NAME = "X-API-KEY"
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
+
+# Definisikan nama fitur agar sesuai saat training (untuk menghindari UserWarning)
+FEATURE_NAMES = ['login_freq', 'last_login_days', 'total_transactions', 'avg_session_time']
 
 # --- 2. Global Variables for Model ---
 model = None
@@ -84,11 +94,18 @@ async def predict(data: PredictionRequest):
         raise HTTPException(status_code=500, detail="Model not loaded")
 
     try:
-        input_features = np.array([[
-            data.login_freq, data.last_login_days, 
-            data.total_transactions, data.avg_session_time
-        ]])
-        scaled_features = scaler.transform(input_features)
+        # Preprocessing: Gunakan DataFrame agar nama fitur sesuai dengan saat training
+        # Ini akan menghilangkan "UserWarning: X does not have valid feature names"
+        input_data = pd.DataFrame([[
+            data.login_freq, 
+            data.last_login_days, 
+            data.total_transactions, 
+            data.avg_session_time
+        ]], columns=FEATURE_NAMES)
+        
+        scaled_features = scaler.transform(input_data)
+        
+        # Prediction
         prob = model.predict_proba(scaled_features)[0][1]
         
         return PredictionResponse(
