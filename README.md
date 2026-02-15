@@ -1,4 +1,4 @@
-# User Churn Prediction Project
+# Proyek Prediksi Churn Pengguna
 
 Proyek ini bertujuan untuk memprediksi apakah seorang pengguna akan berhenti menggunakan aplikasi (churn) atau tetap aktif berdasarkan pola penggunaan mereka.
 
@@ -15,13 +15,13 @@ Proyek ini bertujuan untuk memprediksi apakah seorang pengguna akan berhenti men
 - **avg_session_time**: Rata-rata waktu yang dihabiskan dalam aplikasi (menit).
 
 ## Teknologi yang Digunakan
-- **Python** sebagai bahasa pemrograman utama.
-- **Scikit-Learn** untuk machine learning (Logistic Regression).
-- **Pandas & Numpy** untuk pengolahan data.
-- **Matplotlib & Seaborn** untuk visualisasi data.
-- **Joblib** untuk menyimpan model yang telah dilatih.
+- **Python** (Machine Learning & API)
+- **Scikit-Learn** (Logistic Regression)
+- **FastAPI** (REST API)
+- **Joblib** (Model Serialization)
+- **Docker** (Containerization for Deployment)
 
-## Cara Menjalankan
+## Cara Menjalankan Secara Lokal
 ### 1. Training & Evaluasi Model
 ```bash
 pip install -r requirements.txt
@@ -32,65 +32,22 @@ python churn_prediction.py
 ```bash
 uvicorn main:app --reload
 ```
-Aplikasi akan berjalan di `http:localhost:8000`.
-
-## Dokumentasi API
-FastAPI menyediakan dokumentasi otomatis yang bisa diakses di:
-- **Swagger UI**: `http://localhost:8000/docs`
-- **ReDoc**: `http://localhost:8000/redoc`
-
-### Endpoint `POST /predict`
-**Contoh Payload Input:**
-```json
-{
-  "user_id": "USER-001",
-  "login_freq": 5,
-  "last_login_days": 40,
-  "total_transactions": 2,
-  "avg_session_time": 10.5
-}
-```
-
-**Contoh Response:**
-```json
-{
-  "user_id": "USER-001",
-  "churn_probability": 0.9982,
-  "risk_level": "HIGH"
-}
-```
+Aplikasi akan berjalan di `http:localhost:8000`. Dokumentasi di `/docs`.
 
 ## Keamanan API (API Key)
 API ini dilindungi menggunakan API Key guna memastikan hanya Anda yang bisa mengaksesnya.
 - **Nama Header**: `X-API-KEY`
-- **Isi Header**: (Sesuai dengan `API_KEY` di file `.env`)
+- **Isi Header**: (Sesuai dengan `API_KEY` di file `.env` atau Secret di Hugging Face)
 
-Jika menggunakan `curl`, tambahkan header seperti ini:
-```bash
--H "X-API-KEY: RAHASIA_SAYA_123"
-```
-
-## Deployment Online (Render.com)
-
-1.  **Push ke GitHub**:
-    - Buat repositori baru di GitHub.
-    - Push semua file kecuali yang ada di `.gitignore` (file model `.joblib` harus ikut di-push).
-2.  **Daftar Render.com**:
-    - Pilih **New > Web Service**.
-    - Hubungkan dengan repositori GitHub Anda.
-3.  **Konfigurasi di Render**:
-    - **Runtime**: `Python 3`
-    - **Build Command**: `pip install -r requirements.txt`
-    - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-4.  **Atur Environment Variables** (Sangat Penting):
-    - Masuk ke tab **Environment** di Render.
-    - Tambahkan: `API_KEY` = `KunciRahasiaAnda` (isi sesuai keinginan Anda).
+## Deployment Online (Hugging Face Spaces)
+1. **Buat Space baru** di Hugging Face dengan tipe **Docker (Blank)**.
+2. **Unggah file**: `main.py`, `requirements.txt`, `Dockerfile`, `churn_model.joblib`, `scaler.joblib`.
+3. **Atur Secret**: Di tab Settings, tambahkan secret `API_KEY` dengan kunci rahasia Anda.
 
 ---
-
 ## Output Proyek
-- `user_churn_data.csv`: Dataset sintetis hasil simulasi.
-- `churn_model.joblib`: Model Logistic Regression.
-- `scaler.joblib`: Objek scaler untuk normalisasi data.
-- `confusion_matrix.png`: Performa model.
+- `user_churn_data.csv`: Dataset sintetis.
+- `churn_model.joblib`: Model terlatih.
+- `scaler.joblib`: Objek normalisasi.
+- `confusion_matrix.png`: Metrik performa.
 - `feature_importance.png`: Fitur paling berpengaruh.
